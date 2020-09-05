@@ -6,7 +6,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserRegisterForm
 from django.template import Context 
 
-
 def index(request): 
 	current_user = request.user
 	print(current_user.id)
