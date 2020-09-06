@@ -3,13 +3,31 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login 
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.forms import AuthenticationForm 
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, NewTaskForm
 from django.template import Context 
+from .models import UserTaskList
+from django.db.models import Q
 
-def index(request): 
+
+def index(request):
+	if request.method == 'POST': 
+		task_name = request.POST.get('task_name', "null")
+		project_name = request.POST.get('project_name', "null")
+		start_time = request.POST.get('start_time', "null")
+		end_time = request.POST.get('end_time', "null")
+		print(task_name, project_name, start_time, end_time)
+	
+		task_info = UserTaskList(user_id = request.user.id, task_name = task_name, project_name = project_name, start_time = start_time, end_time = end_time)
+		task_info.save()
+
+
+	content = {}
 	current_user = request.user
-	print(current_user.id)
-	return render(request, 'user/index.html', {'title':'time_chart', 'user_id':current_user.id}) 
+	content['title'] = 'Time Chart'
+	content['first_name'] = current_user.first_name
+	content['user_data'] = UserTaskList.objects.filter(Q(user_id=int(current_user.id))).values()
+	return render(request, 'user/index.html', content) 
+	#eturn render(request, 'user/index.html', {'title':'time_chart', 'user_id':current_user.id}) 
 
 
 def register(request): 

@@ -10,7 +10,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="language" content="English">
 
-  <title>{{title}}</title>
+  <title>{{ title }}</title>
 
 
   <!-- bootstrap file -->
@@ -19,28 +19,11 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <!-- bootstrap file-->
 
-  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
-  <!-- main css -->
   <link rel="stylesheet" type="text/css" href="{% static "index.css" %}" />
-
-
-  <!-- message here -->
-
-  {% if messages %}
-  {% for message in messages %}
-
-  <script>
-    alert("{{ message }}");
-  </script>
-
-  {% endfor %}
-  {% endif %}
-
 </head>
 <body class="container-fluid">
   <header class="row">
@@ -73,7 +56,61 @@
   <div class="row">
     {% block start %}
     {% if user.is_authenticated %}
-    <center><h1 class = h1>Hello, {{user.first_name}}</h1></center>
+    <h1 class = h1 style="padding-left:24px">Hello, {{first_name}}</h1>
+    <div class="col-md-5" style="padding:24px">
+      <h3>Enter new task</h3>
+      <form name = "form" class = "form" action = "/" method = "POST" >{% csrf_token %}
+        <div class="form-group">
+          <label for="task_name">Task</label>
+          <input name = "task_name" type="text" class="form-control" id="task_name" placeholder="Enter your task">
+        </div>
+        <div class="form-group">
+          <label for="project_name">Project</label>
+          <select name = "project_name" id="project_name" class="form-control">
+            <option selected>Choose...</option>
+            <option>Python Project</option>
+            <option>Java Project</option>
+            <option>C Project</option>
+            <option>C++ Project</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="start_time">Start Time</label>
+          <input name = "start_time" type="datetime-local" class="form-control" id="start_time" placeholder="Enter your task">
+        </div>
+        <div class="form-group">
+          <label for="end_time">End Time</label>
+          <input name = "end_time" type="datetime-local" class="form-control" id="end_time" placeholder="Enter your task">
+        </div>
+        <button type="submit" class="btn btn-primary">Create New Task</button>
+      </form>
+    </div>
+
+
+    <div class="col-md-7" style="padding:24px">
+      <table class="table table-striped">
+        <thead class="thead-light">
+          <h3>Your task list</h3>
+          <tr>
+            <th scope="col">Task</th>
+            <th scope="col">Project</th>
+            <th scope="col">Start Time</th>
+            <th scope="col">End Time</th>
+            <th scope="col">Total Time</th>
+          </tr>
+        </thead>
+        {% for data in user_data %}
+        <tr>
+          <td scope="row"> {{ data.task_name }}</td>
+          <td> {{ data.project_name }}</td>
+          <td> {{ data.start_time }}</td>
+          <td> {{ data.end_time }}</td>
+          <td> {{ data.end_time|timeuntil:data.start_time }}</td>
+
+        </tr> 
+        {% endfor %}
+        </table>
+      </div>
 
     {% else %}
     <center><h1>log in, plz . . .</h1></center>

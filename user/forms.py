@@ -13,3 +13,10 @@ class UserRegisterForm(UserCreationForm):
 	class Meta: 
 		model = User 
 		fields = [ 'first_name', 'last_name', 'username', 'email', 'phone_no','password1', 'password2'] 
+
+
+class NewTaskForm(forms.Form):
+	task_name = forms.CharField(max_length = 50)
+	project_name = forms.CharField(max_length = 50)
+	start_time = forms.DateTimeField
+	end_time = forms.DateTimeField
